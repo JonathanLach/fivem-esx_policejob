@@ -656,7 +656,7 @@ RegisterNUICallback('select', function(data, cb)
 				end
 
 				if not IsAnyVehicleNearPoint(coords.x, coords.y, coords.z, 5.0) then
-					local vehicle = CreateVehicle(vehicleModel, coords.x, coords.y, coords.z, 90.0, true, true)
+					local vehicle = CreateVehicle(vehicleModel, coords.x, coords.y, coords.z, 90.0, true, false)
 					SetVehicleHasBeenOwnedByPlayer(vehicle,  true)
 					SetEntityAsMissionEntity(vehicle,  true,  true)
 					local id = NetworkGetNetworkIdFromEntity(vehicle)
