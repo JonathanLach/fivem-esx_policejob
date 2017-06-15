@@ -589,10 +589,9 @@ AddEventHandler('esx_policejob:responseFineList', function(fines)
 
 	for i=1, #fines, 1 do
 		table.insert(items, {
-			label          = 'Payer $' .. fines[i].amount .. ' pour ' .. fines[i].label,
-			value          = fines[i].id,
-			count          = fines[i].amount,
-			removeOnSelect = true
+			label = 'Payer $' .. fines[i].amount .. ' pour ' .. fines[i].label,
+			value = fines[i].id,
+			count = fines[i].amount,
 		})
 	end
 
@@ -600,6 +599,28 @@ AddEventHandler('esx_policejob:responseFineList', function(fines)
 		showControls = false,
 		showMenu     = true,
 		menu         = 'fine_list',
+		items        = items
+	})
+
+end)
+
+RegisterNetEvent('esx_policejob:responseVehicleInfos')
+AddEventHandler('esx_policejob:responseVehicleInfos', function(infos)
+
+	local items = {}
+	local owner = 'Inconnu'
+
+	if infos.owner ~= nil then
+		owner = infos.owner
+	end
+
+	table.insert(items, {label = 'N°: ' .. infos.plate, value = nil})
+	table.insert(items, {label = 'Propriétaire: ' .. owner, value = nil})
+
+	SendNUIMessage({
+		showControls = false,
+		showMenu     = true,
+		menu         = 'vehicle_infos',
 		items        = items
 	})
 
@@ -734,6 +755,7 @@ RegisterNUICallback('select', function(data, cb)
 
 		if data.menu == 'fine_list' then
 			TriggerServerEvent('esx_policejob:requestPayFine', data.val, data.count, GetPlayerName(PlayerId()))
+			TriggerServerEvent('esx_policejob:requestFineList')
 		end
 
 		if data.menu == 'vehicle_interaction' then
@@ -756,19 +778,8 @@ RegisterNUICallback('select', function(data, cb)
 	        if DoesEntityExist(vehicle) then
 	        	
 	        	local plateText = GetVehicleNumberPlateText(vehicle)
-						local items     = {}
 
-						table.insert(items, {label = 'N°: ' .. plateText, value = nil})
-
-						local ownerName = 'IA'
-
-						SendNUIMessage({
-							showControls = false,
-							showMenu     = true,
-							menu         = 'vehicle_infos',
-							items        = items
-						})
-
+	        	TriggerServerEvent('esx_policejob:requestVehicleInfos', plateText)
 	        end
 
 	      end

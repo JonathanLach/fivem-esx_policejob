@@ -40,6 +40,44 @@ AddEventHandler('esx_policejob:responsePlayerWeapons', function(weapons, playerI
 	end)
 end)
 
+RegisterServerEvent('esx_policejob:requestVehicleInfos')
+AddEventHandler('esx_policejob:requestVehicleInfos', function(plate)
+	
+	local _source = source
+
+	TriggerEvent('esx:getPlayers', function(xPlayers)
+
+		local infos = {
+			plate = plate
+		}
+
+		local owner = nil
+
+		for k,v in pairs(xPlayers) do
+
+			if v.ownedVehicles == nil then
+				break
+			end
+
+			for i=1, #v.ownedVehicles, 1 do
+				if v.ownedVehicles[i] == plate then
+					owner = v.name
+					break
+				end
+			end
+
+		end
+
+		if owner ~= nil then
+			infos.owner = owner
+		end
+
+		TriggerClientEvent('esx_policejob:responseVehicleInfos', _source, infos)
+
+	end)
+
+end)
+
 RegisterServerEvent('esx_policejob:requestPlayerPositions')
 AddEventHandler('esx_policejob:requestPlayerPositions', function(reason)
 	
